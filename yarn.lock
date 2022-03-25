@@ -2,10 +2,6 @@
 # yarn lockfile v1
 
 
-"@chriscdn/async-for-each@https://github.com/chriscdn/async-for-each":
-  version "1.0.0"
-  resolved "https://github.com/chriscdn/async-for-each#9a884d6704b6cd064db137bc41adea1b86e2d6da"
-
 fastify-plugin@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-3.0.1.tgz#79e84c29f401020f38b524f59f2402103fd21ed2"

@@ -4,7 +4,6 @@
   "main": "./fastify-plugin/index.js",
   "license": "MIT",
   "dependencies": {
-    "@chriscdn/async-for-each": "https://github.com/chriscdn/async-for-each",
     "fastify-plugin": "^3.0.1",
     "is-function": "^1.0.2",
     "isobject": "^4.0.0"

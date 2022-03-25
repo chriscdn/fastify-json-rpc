@@ -1,4 +1,3 @@
-const asyncForEach = require('@chriscdn/async-for-each')
 const isobject = require('isobject')
 const isFunction = require('is-function')
 const fp = require('fastify-plugin')
@@ -9,9 +8,10 @@ function successObject(id, result) {
   return {
     jsonrpc: '2.0',
     result,
-    ...(id && {
-      id,
-    }),
+    id,
+    // ...(id && {
+    //   id,
+    // }),
   }
 }
 
@@ -31,9 +31,10 @@ function errorObject(id, err) {
       data: err.data,
       message: err.message,
     },
-    ...(id && {
-      id,
-    }),
+    id,
+    // ...(id && {
+    //   id,
+    // }),
   }
 }
 
@@ -41,6 +42,7 @@ const processRequest = async (req, res, methods, body) => {
   const jsonrpc = body.jsonrpc
   const methodName = body.method
   const id = body.id
+
   const params = body.params
 
   const method = methods[methodName]
@@ -141,8 +143,8 @@ function registerPlugin(fastify, opts, done) {
 
         if (Array.isArray(body)) {
           return reply.send(
-            await asyncForEach(body, (body) =>
-              processRequest(request, reply, methods, body)
+            await Promise.all(
+              body.map((item) => processRequest(request, reply, methods, item))
             )
           )
         } else if (isobject(body)) {
