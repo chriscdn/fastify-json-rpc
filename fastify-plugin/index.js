@@ -9,9 +9,6 @@ function successObject(id, result) {
     jsonrpc: '2.0',
     result,
     id,
-    // ...(id && {
-    //   id,
-    // }),
   }
 }
 
@@ -32,9 +29,6 @@ function errorObject(id, err) {
       message: err.message,
     },
     id,
-    // ...(id && {
-    //   id,
-    // }),
   }
 }
 
