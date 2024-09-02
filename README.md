@@ -1,5 +1,5 @@
 # @chriscdn/fastify-json-rpc
 
-RPC for fastify.
+JSON-RPC for fastify.
 
 Documentation pending.

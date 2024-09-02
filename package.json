@@ -1,11 +1,29 @@
 {
   "name": "@chriscdn/fastify-json-rpc",
-  "version": "0.0.1",
-  "main": "./fastify-plugin/index.js",
+  "version": "0.1.0",
   "license": "MIT",
+  "type": "module",
+  "source": "./src/index.ts",
+  "exports": {
+    "types": "./lib/index.d.ts",
+    "require": "./lib/fastify-json-rpc.cjs",
+    "default": "./lib/fastify-json-rpc.modern.js"
+  },
+  "types": "./lib/index.d.ts",
+  "main": "./lib/fastify-json-rpc.cjs",
+  "module": "./lib/fastify-json-rpc.module.js",
+  "__unpkg": "./lib/fastify-json-rpc.umd.js",
+  "scripts": {
+    "build": "rm -rf ./lib/ && microbundle --format=esm,cjs,modern",
+    "dev": "microbundle watch --format=esm,cjs,modern"
+  },
   "dependencies": {
-    "fastify-plugin": "^3.0.1",
+    "fastify": "^4.28.1",
+    "fastify-plugin": "^4.5.1",
     "is-function": "^1.0.2",
     "isobject": "^4.0.0"
+  },
+  "devDependencies": {
+    "microbundle": "^0.15.1"
   }
 }
