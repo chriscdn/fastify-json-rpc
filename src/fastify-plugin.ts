@@ -51,20 +51,24 @@ const errorObject = (
     err = new CustomError(ErrorCodes.INTERNALERROR, { internal: message });
   }
 
+  const error = {
+    code: err.code,
+    data: err.data ?? 1234,
+    message: err.message,
+  };
+
+  // console.log(error);
+
   return {
     jsonrpc: "2.0",
-    error: {
-      code: err.code,
-      data: err.data,
-      message: err.message,
-    },
+    error,
     id,
   };
 };
 
 const processRequest = async (
   req: FastifyRequest,
-  res: FastifyReply,
+  _res: FastifyReply,
   methods: RPCMethods,
   body: JSONRPCRequest,
 ) => {
@@ -76,7 +80,7 @@ const processRequest = async (
 
   const method = methods[methodName];
 
-  if (jsonrpc != "2.0" || methodName == null) {
+  if (jsonrpc !== "2.0" || methodName == null) {
     return errorObject(id, ErrorCodes.INVALIDREQUEST);
   } else if (params && !(isobject(params) || Array.isArray(params))) {
     return errorObject(id, ErrorCodes.INVALIDREQUEST);
@@ -88,7 +92,10 @@ const processRequest = async (
       );
     } catch (err) {
       // keep this console.log for sanity sake
+      console.log("***** RPC Method threw an exception.");
       console.log(err);
+      console.log("*****");
+
       return errorObject(id, err);
     }
   } else {
@@ -132,11 +139,19 @@ const registerPlugin = (
         type: "string",
         enum: ["2.0"],
       },
-      result: {
-        type: "string",
-      },
+      result: {},
       error: {
         type: "object",
+        properties: {
+          code: {
+            type: "number",
+          },
+          message: {
+            type: "string",
+          },
+          data: {},
+        },
+        required: ["code"],
       },
       id: {
         anyOf: [{ type: "integer" }, { type: "string" }, { type: "null" }],
