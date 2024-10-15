@@ -1,3 +1,3 @@
-export * from "./fastify-plugin";
-export * from "./fastify-plugin-errors";
-export * from "./types";
+export * from "./fastify-plugin.ts";
+export * from "./fastify-plugin-errors.ts";
+export * from "./types.ts";

@@ -6,7 +6,7 @@ import {
   type FastifyReply,
   type FastifyRequest,
 } from "fastify";
-import { CustomError, ErrorCodes } from "./fastify-plugin-errors";
+import { CustomError, ErrorCodes } from "./fastify-plugin-errors.ts";
 import { JSONRPCRequest, JSONRPCResponse, JSONRPCResponseError } from "./types";
 
 /**
