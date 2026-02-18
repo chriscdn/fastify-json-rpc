@@ -1,4 +1,4 @@
-import { ErrorObj } from "./types";
+import { ErrorObj } from "./types.js";
 
 const ErrorCodes: Record<string, ErrorObj> = {
   PARSEERROR: {

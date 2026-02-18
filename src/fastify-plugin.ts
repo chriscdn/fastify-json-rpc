@@ -1,31 +1,19 @@
-import isobject from "isobject";
-import isFunction from "is-function";
+// import isFunction from "is-function";
 import fp from "fastify-plugin";
-import {
-  type FastifyPluginOptions,
-  type FastifyReply,
-  type FastifyRequest,
+import type {
+  FastifyPluginOptions,
+  FastifyReply,
+  FastifyRequest,
 } from "fastify";
-import { CustomError, ErrorCodes } from "./fastify-plugin-errors";
-import { JSONRPCRequest, JSONRPCResponse, JSONRPCResponseError } from "./types";
-
-/**
- * Where you put this is important. Seems to work fine here.
- */
-declare module "fastify" {
-  interface FastifyInstance {
-    rpcify: (prefix: string, methods: RPCMethods) => void;
-  }
-}
-
-type TID = JSONRPCRequest["id"];
-export type StructuredObject = { [key: string]: any } | any[];
-type RPCMethods = Record<string, RPCMethod<any>>;
-type Logger = FastifyRequest["log"];
-
-export type RPCMethod<T extends StructuredObject, R = any> = (
-  { params, logger }: { params: T; logger: Logger },
-) => Promise<R> | R;
+import { CustomError, ErrorCodes } from "./fastify-plugin-errors.js";
+import type {
+  JSONRPCRequest,
+  JSONRPCResponse,
+  JSONRPCResponseError,
+  RPCMethods,
+  TID,
+} from "./types.js";
+import { isFunction, isObject } from "./utils.js";
 
 const isJSONRPCRequestObj = (item: unknown): item is JSONRPCRequest => {
   const testItem = item as JSONRPCRequest;
@@ -57,8 +45,6 @@ const errorObject = (
     message: err.message,
   };
 
-  // console.log(error);
-
   return {
     jsonrpc: "2.0",
     error,
@@ -82,7 +68,7 @@ const processRequest = async (
 
   if (jsonrpc !== "2.0" || methodName == null) {
     return errorObject(id, ErrorCodes.INVALIDREQUEST);
-  } else if (params && !(isobject(params) || Array.isArray(params))) {
+  } else if (params && !(isObject(params) || Array.isArray(params))) {
     return errorObject(id, ErrorCodes.INVALIDREQUEST);
   } else if (isFunction(method)) {
     try {
@@ -96,7 +82,8 @@ const processRequest = async (
       console.log(err);
       console.log("*****");
 
-      return errorObject(id, err);
+      // This err handling should be better.
+      return errorObject(id, err as any);
     }
   } else {
     return errorObject(id, ErrorCodes.METHODNOTFOUND);
@@ -104,11 +91,10 @@ const processRequest = async (
 };
 
 // For whatever reason `fastify: FastifyInstance`, breaks here
-const registerPlugin = (
+const registerPlugin = async (
   // fastify: FastifyInstance,
   fastify: any,
   _opts: FastifyPluginOptions,
-  done,
 ) => {
   fastify.addSchema({
     $id: "json-rpc-request-body",
@@ -199,7 +185,7 @@ const registerPlugin = (
           },
         },
       },
-      async handler(request, reply) {
+      async handler(request: FastifyRequest, reply: FastifyReply) {
         const body = request.body as JSONRPCRequest | JSONRPCRequest[];
 
         if (Array.isArray(body)) {
@@ -219,7 +205,7 @@ const registerPlugin = (
     });
   });
 
-  done();
+  // done();
 };
 
 const fastifyPlugin = fp(registerPlugin);
