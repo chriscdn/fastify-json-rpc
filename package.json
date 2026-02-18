@@ -1,6 +1,6 @@
 {
   "name": "@chriscdn/fastify-json-rpc",
-  "version": "0.1.4",
+  "version": "0.2.1",
   "license": "MIT",
   "type": "module",
   "source": "./src/index.ts",
